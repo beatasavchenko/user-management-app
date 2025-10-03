@@ -1,0 +1,33 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "npm run build && node --inspect=0.0.0.0 dist/index.js",
+    "dev": "nodemon --watch src --ext ts --exec \"npm run start\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@prisma/client": "^6.16.3",
+    "dayjs": "^1.11.18",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "nodemon": "^3.1.10",
+    "typescript": "^5.9.3",
+    "zod": "^4.1.11"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.6.2",
+    "@typescript-eslint/eslint-plugin": "^8.45.0",
+    "@typescript-eslint/parser": "^8.45.0",
+    "eslint": "^9.36.0",
+    "prettier": "^3.6.2",
+    "prisma": "^6.16.3",
+    "ts-node": "^10.9.2"
+  }
+}

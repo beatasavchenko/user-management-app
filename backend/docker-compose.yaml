@@ -1,0 +1,26 @@
+services:
+  postgres:
+    image: postgres:18
+    environment:
+      POSTGRES_DB: user_management_system
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - 5432:5432
+
+  backend:
+    build: .
+    ports:
+      - 5000:5000
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    command: npm run dev
+    depends_on:
+      - postgres
+    environment:
+      PORT: ${PORT}
+      DATABASE_URL: ${DATABASE_URL}
+    develop:
+      watch:
+        - action: rebuild
+          path: package.json

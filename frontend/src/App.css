@@ -1,0 +1,106 @@
+#user-page {
+    width: 1280px;
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 20px;
+}
+
+#top-bar {
+    display: flex;
+    height: 30px;
+    gap: 10px;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#search-bar {
+    width: 600px;
+    height: 30px;
+    font-size: large;
+    border: 1px solid #ccc;
+    border-radius: 7px;
+    padding: 3px;
+}
+
+#create-user-button {
+    height: 36px;
+    padding: 0 15px 0 15px;
+}
+
+#create-user-button-text {
+    display: flex;
+    font-size: medium;
+    font-weight: bold;
+    gap: 5px;
+}
+
+dialog {
+    width: 400px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+}
+
+.dialog-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dialog-content {
+    background: white;
+    padding: 1rem;
+    border-radius: 6px;
+    max-width: 500px;
+    width: 100%;
+}
+
+#dialog-title {
+    font-size: larger;
+    font-weight: bold;
+    margin-top: 0;
+}
+
+.form-input {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin: 10px 0 10px 0;
+}
+
+.form-input input {
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    height: 20px;
+}
+
+.error {
+    color: red;
+    font-size: small;
+}
+
+table {
+    border-collapse: collapse;
+    text-align: left;
+    width: 100%;
+}
+
+td,
+th {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 200px;
+}
+
+.icon {
+    cursor: pointer;
+}
+
+#trash-icon {
+    color: red;
+}

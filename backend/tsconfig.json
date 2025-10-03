@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "lib": ["esnext"],
+    "outDir": "dist",
+    "esModuleInterop": true
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}
