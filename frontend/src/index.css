@@ -33,7 +33,11 @@ button {
     background-color: #535bf2;
     cursor: pointer;
     color: white;
+    height: 36px;
+    padding: 0 15px 0 15px;
     transition: border-color 0.25s;
+    font-size: medium;
+    font-weight: bold;
 }
 button:hover {
     border-color: #3a40b4;

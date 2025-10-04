@@ -8,19 +8,17 @@ services:
       - 5432:5432
 
   backend:
-    build: .
+    build:
+      context: .
     ports:
       - 5000:5000
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
+      - ../shared:/usr/src/app/shared
     command: npm run dev
     depends_on:
       - postgres
     environment:
       PORT: ${PORT}
       DATABASE_URL: ${DATABASE_URL}
-    develop:
-      watch:
-        - action: rebuild
-          path: package.json

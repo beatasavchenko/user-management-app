@@ -1,44 +1,39 @@
 import { useState } from "react";
 import { z, ZodError } from "zod";
+import { userSchema } from "@shared/schemas/userSchema";
+import { useAddUserMutation } from "../features/users/user-api-slice";
+import toast from "react-hot-toast";
 
-export const userSchema = z
-    .object({
-        customerNumber: z
-            .string()
-            .length(5, "Customer number must be 5 characters long."),
-        username: z
-            .string()
-            .min(3, "Username must be at least 3 characters long.")
-            .max(30, "Username must be at most 30 characters long.")
-            .regex(
-                /^[a-zA-Z0-9_]+$/,
-                "Username can only contain letters and numbers."
-            ),
-        firstName: z
-            .string()
-            .min(2, "First Name must be at least 2 characters long.")
-            .max(150, "First Name must be at most 150 characters long."),
-        lastName: z
-            .string()
-            .min(2, "Last Name must be at least 2 characters long.")
-            .max(150, "Last Name must be at most 150 characters long."),
-        email: z
-            .string()
-            .max(300, "Email must be at most 300 characters long.")
-            .email("Invalid email address."),
-        dateOfBirth: z.string(),
-        password: z
+const frontendUserSchema = userSchema
+    .extend({
+        repeatPassword: z
             .string()
             .min(8, "Password must be at least 8 characters long.")
             .max(150, "Password must be at most 150 characters long."),
-        repeatPassword: z.string(),
     })
     .refine((data) => data.password === data.repeatPassword, {
         message: "Passwords must match",
         path: ["repeatPassword"],
     });
 
-type UserFormData = z.infer<typeof userSchema>;
+type UserFormData = z.infer<typeof frontendUserSchema>;
+
+type FieldConfig = {
+    type: "text" | "password" | "email" | "date" | "number";
+    label?: string;
+    placeholder?: string;
+};
+
+const fieldConfigs: Record<keyof UserFormData, FieldConfig> = {
+    customerNumber: { type: "text", label: "Customer Number" },
+    username: { type: "text", label: "Username" },
+    firstName: { type: "text", label: "First Name" },
+    lastName: { type: "text", label: "Last Name" },
+    email: { type: "email", label: "Email" },
+    dateOfBirth: { type: "date", label: "Date of Birth" },
+    password: { type: "password", label: "Password" },
+    repeatPassword: { type: "password", label: "Repeat Password" },
+};
 
 export default function CreateUserForm() {
     const [values, setValues] = useState<UserFormData>({
@@ -60,9 +55,11 @@ export default function CreateUserForm() {
         setValues({ ...values, [e.target.id]: e.target.value });
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const [createUserMutation] = useAddUserMutation();
+
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const result = userSchema.safeParse(values);
+        const result = frontendUserSchema.safeParse(values);
 
         if (!result.success) {
             const fieldErrors: Partial<Record<keyof UserFormData, string>> = {};
@@ -75,8 +72,14 @@ export default function CreateUserForm() {
             setErrors(fieldErrors);
         } else {
             setErrors({});
-            alert("User created successfully!");
-            console.log(result.data);
+            await createUserMutation(values)
+                .unwrap()
+                .then(() => {
+                    toast.success("User created successfully");
+                })
+                .catch(() => {
+                    toast.error("Error creating user");
+                });
         }
     };
 
@@ -93,22 +96,27 @@ export default function CreateUserForm() {
                     ["password", "Password"],
                     ["repeatPassword", "Repeat Password"],
                 ] as const
-            ).map(([field, label]) => (
-                <div className="form-input" key={field}>
-                    <label htmlFor={field}>{label}</label>
-                    <input
-                        id={field}
-                        type={
-                            field.toLowerCase().includes("password")
-                                ? "password"
-                                : "text"
-                        }
-                        value={values[field]}
-                        onChange={handleChange}
-                    />
-                    <p className="error">{errors[field] && errors[field]}</p>
-                </div>
-            ))}
+            ).map(([field]) => {
+                const config = fieldConfigs[field];
+
+                return (
+                    <div className="form-input" key={field}>
+                        {config.label && (
+                            <label htmlFor={field}>{config.label}</label>
+                        )}
+                        <input
+                            id={field}
+                            type={config.type}
+                            value={values[field]}
+                            onChange={handleChange}
+                            placeholder={config.placeholder}
+                        />
+                        <p className="error">
+                            {errors[field] && errors[field]}
+                        </p>
+                    </div>
+                );
+            })}
 
             <button type="submit">Create User</button>
         </form>

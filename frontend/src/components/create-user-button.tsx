@@ -14,7 +14,7 @@ export default function CreateUserButton() {
 
     return (
         <div>
-            <button id="create-user-button" onClick={handleClick}>
+            <button onClick={handleClick}>
                 <div id="create-user-button-text">
                     <FontAwesomeIcon className="icon" icon={faPlus} /> Create
                 </div>
