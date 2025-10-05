@@ -7,14 +7,6 @@ const prisma = new PrismaClient();
 
 const SALT_ROUNDS = 10;
 
-const ALLOWED_SORT_COLUMNS = [
-  "customerNumber",
-  "username",
-  "firstName",
-  "lastName",
-  "lastLogin"
-];
-
 const DB_COLUMNS_MAP: Record<string, string> = {
   customerNumber: "customer_number",
   username: "username",
@@ -41,12 +33,6 @@ const getAllUsers = async ({
   sortBy,
   order
 }: GetAllUsersParams) => {
-  console.log(search, sortBy, order);
-
-  // const column = ALLOWED_SORT_COLUMNS.includes(sortBy)
-  //   ? sortBy
-  //   : "customerNumber";
-
   const users = await prisma.user.findMany({
     where: search
       ? {
@@ -90,6 +76,7 @@ const createUser = async (userToCreate: CreateUserDto) => {
       "Validation failed: " + JSON.stringify(parsed.error.issues)
     );
 
+  // validation on the BE side
   const customerNumberExists = await prisma.user.findUnique({
     where: { customer_number: userToCreate.customerNumber }
   });
@@ -135,18 +122,19 @@ const updateUser = async (customerNumber: string, userToEdit: EditUserDto) => {
     throw { type: "validation", errors: parsed.error.issues };
   }
 
-  // if (userToEdit.customerNumber) {
-  //   const exists = await prisma.user.findFirst({
-  //     where: {
-  //       customer_number: userToEdit.customerNumber
-  //     }
-  //   });
-  //   if (exists)
-  //     throw {
-  //       field: "customerNumber",
-  //       message: "Customer number already exists."
-  //     };
-  // }
+  if (userToEdit.customerNumber) {
+    const exists = await prisma.user.findFirst({
+      where: {
+        customer_number: userToEdit.customerNumber,
+        NOT: { customer_number: customerNumber }
+      }
+    });
+    if (exists)
+      throw {
+        field: "customerNumber",
+        message: "Customer number already exists."
+      };
+  }
 
   if (userToEdit.email) {
     const exists = await prisma.user.findFirst({

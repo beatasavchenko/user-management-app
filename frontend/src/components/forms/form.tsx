@@ -39,7 +39,6 @@ export default function Form<T extends Record<string, any>>({
                 const field = issue.path[0] as keyof T;
                 fieldErrors[field] = issue.message;
             });
-            console.log(fieldErrors);
 
             setErrors(fieldErrors);
             return;

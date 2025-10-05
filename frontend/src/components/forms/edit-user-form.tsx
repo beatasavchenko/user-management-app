@@ -25,7 +25,10 @@ export default function EditUserForm({
 
     const handleEdit = async (data: UserFormData) => {
         try {
-            await editUser(data).unwrap();
+            await editUser({
+                originalCustomerNumber: customerNumber,
+                data,
+            }).unwrap();
             toast.success("User edited successfully");
             navigate("/");
         } catch (err: any) {

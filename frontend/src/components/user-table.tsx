@@ -71,13 +71,11 @@ export const UserTable = ({ search }: { search: string }) => {
                                 <th
                                     key={col.key}
                                     onClick={() => handleSort(col.key)}
-                                    style={{
-                                        cursor: "pointer",
-                                        userSelect: "none",
-                                    }}
+                                    id="sortable-header"
                                 >
                                     {col.label}{" "}
                                     <FontAwesomeIcon
+                                        id="sorting-icon"
                                         icon={
                                             sortColumn === col.key
                                                 ? sortOrder === "asc"

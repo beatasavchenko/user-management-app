@@ -17,7 +17,7 @@ export const userSlice = createApi({
     baseQuery: fetchBaseQuery({
         baseUrl: "http://localhost:5000/api/users",
     }),
-    tagTypes: ["Users"],
+    tagTypes: ["Users", "User"],
     endpoints(builder) {
         return {
             getUsers: builder.query<User[], GetUsersParams>({
@@ -42,6 +42,7 @@ export const userSlice = createApi({
                     url: `/${customerNumber}`,
                     method: "GET",
                 }),
+                providesTags: ["User"],
             }),
             addUser: builder.mutation<CreateUserDto, Partial<User>>({
                 query: (body) => ({
@@ -51,13 +52,16 @@ export const userSlice = createApi({
                 }),
                 invalidatesTags: ["Users"],
             }),
-            editUser: builder.mutation<EditUserDto, Partial<User>>({
-                query: (body) => ({
-                    url: `/${body.customerNumber}`,
+            editUser: builder.mutation<
+                EditUserDto,
+                { originalCustomerNumber: string; data: Partial<User> }
+            >({
+                query: ({ originalCustomerNumber, data }) => ({
+                    url: `/${originalCustomerNumber}`,
                     method: "PUT",
-                    body,
+                    body: data,
                 }),
-                invalidatesTags: ["Users"],
+                invalidatesTags: ["Users", "User"],
             }),
             deleteUser: builder.mutation<boolean, { customerNumber: string }>({
                 query: ({ customerNumber }) => ({

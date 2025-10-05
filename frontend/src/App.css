@@ -74,10 +74,30 @@ th {
     border: 1px solid #ccc;
 }
 
+#sortable-header {
+    cursor: pointer;
+    user-select: none;
+}
+
+#sort-icon {
+    font-size: 0.8em;
+}
+
 .icon {
     cursor: pointer;
 }
 
 #trash-icon {
     color: red;
+}
+
+.page-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+#arrow-icon {
+    font-size: x-large;
+    cursor: pointer;
 }
