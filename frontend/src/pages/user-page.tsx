@@ -1,20 +1,19 @@
-import SearchBar from "./search-bar";
-import { UserTable } from "./user-table";
-import CreateUserButton from "./create-user-button";
+import SearchBar from "../components/search-bar";
+import { UserTable } from "../components/user-table";
+import CreateUserButton from "../components/create-user-button";
 import { useState } from "react";
-import { Toaster } from "react-hot-toast";
+import PageLayout from "../components/page-layout";
 
 export default function UserPage() {
     const [search, setSearch] = useState("");
 
     return (
-        <div id="user-page">
+        <PageLayout>
             <div id="top-bar">
                 <SearchBar search={search} setSearch={setSearch} />
                 <CreateUserButton />
             </div>
             <UserTable search={search} />
-            <Toaster position="bottom-right" />
-        </div>
+        </PageLayout>
     );
 }

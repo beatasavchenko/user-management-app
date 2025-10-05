@@ -1,5 +1,5 @@
-#user-page {
-    width: 80%;
+#page-layout {
+    width: 80vw;
     margin-top: 40px;
     display: flex;
     flex-direction: column;
@@ -29,46 +29,20 @@
     gap: 5px;
 }
 
-dialog {
-    width: 400px;
+input {
     border: 1px solid #ccc;
-    border-radius: 10px;
-}
-
-.dialog-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.dialog-content {
-    background: white;
-    padding: 1rem;
-    border-radius: 6px;
-    max-width: 500px;
-    width: 100%;
-}
-
-#dialog-title {
-    font-size: larger;
-    font-weight: bold;
-    margin-top: 0;
 }
 
 .form-input {
     display: flex;
     flex-direction: column;
     gap: 2px;
-    /* margin: 10px 0 10px 0; */
 }
 
 .form-input input {
     border: 1px solid #ccc;
     border-radius: 2px;
-    height: 20px;
+    height: 30px;
 }
 
 .error {
@@ -79,10 +53,15 @@ dialog {
     height: 20px;
 }
 
+.table-container {
+    overflow-x: auto;
+}
+
 table {
     border-collapse: collapse;
     text-align: left;
     width: 100%;
+    min-width: 600px;
 }
 
 td,
@@ -91,6 +70,8 @@ th {
     text-overflow: ellipsis;
     white-space: nowrap;
     max-width: 200px;
+    padding: 12px 16px;
+    border: 1px solid #ccc;
 }
 
 .icon {

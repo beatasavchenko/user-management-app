@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import type { CreateUserDto, User } from "@shared/types/User.type";
+import type { CreateUserDto, EditUserDto, User } from "@shared/types/User.type";
 
 type GetUsersParams = {
     search?: string;
@@ -34,10 +34,27 @@ export const userSlice = createApi({
                 },
                 providesTags: ["Users"],
             }),
+            getUserByCustomerNumber: builder.query<
+                User,
+                { customerNumber: string }
+            >({
+                query: ({ customerNumber }) => ({
+                    url: `/${customerNumber}`,
+                    method: "GET",
+                }),
+            }),
             addUser: builder.mutation<CreateUserDto, Partial<User>>({
                 query: (body) => ({
                     url: "",
                     method: "POST",
+                    body,
+                }),
+                invalidatesTags: ["Users"],
+            }),
+            editUser: builder.mutation<EditUserDto, Partial<User>>({
+                query: (body) => ({
+                    url: `/${body.customerNumber}`,
+                    method: "PUT",
                     body,
                 }),
                 invalidatesTags: ["Users"],
@@ -53,5 +70,10 @@ export const userSlice = createApi({
     },
 });
 
-export const { useGetUsersQuery, useAddUserMutation, useDeleteUserMutation } =
-    userSlice;
+export const {
+    useGetUsersQuery,
+    useGetUserByCustomerNumberQuery,
+    useAddUserMutation,
+    useEditUserMutation,
+    useDeleteUserMutation,
+} = userSlice;

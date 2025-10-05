@@ -1,9 +1,11 @@
 import { PrismaClient } from "@prisma/client";
-import { userSchema } from "@shared/schemas/userSchema";
-import { CreateUserDto } from "@shared/types/User.type";
+import { editUserSchema, userSchema } from "@shared/schemas/userSchema";
+import { CreateUserDto, EditUserDto } from "@shared/types/User.type";
 import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient();
+
+const SALT_ROUNDS = 10;
 
 const ALLOWED_SORT_COLUMNS = [
   "customerNumber",
@@ -12,6 +14,16 @@ const ALLOWED_SORT_COLUMNS = [
   "lastName",
   "lastLogin"
 ];
+
+const DB_COLUMNS_MAP: Record<string, string> = {
+  customerNumber: "customer_number",
+  username: "username",
+  firstName: "first_name",
+  lastName: "last_name",
+  email: "email",
+  lastLogin: "last_login",
+  dateOfBirth: "date_of_birth"
+};
 
 type GetAllUsersParams = {
   search?: string;
@@ -53,7 +65,12 @@ const getAllUsers = async ({
         }
       : {},
     ...(sortBy && order
-      ? { orderBy: { [sortBy]: order === "desc" ? "desc" : "asc" } }
+      ? {
+          orderBy: {
+            [DB_COLUMNS_MAP[sortBy] ?? sortBy]:
+              order === "desc" ? "desc" : "asc"
+          }
+        }
       : {})
   });
 
@@ -73,9 +90,27 @@ const createUser = async (userToCreate: CreateUserDto) => {
       "Validation failed: " + JSON.stringify(parsed.error.issues)
     );
 
-  const saltRounds = 10;
+  const customerNumberExists = await prisma.user.findUnique({
+    where: { customer_number: userToCreate.customerNumber }
+  });
+  if (customerNumberExists)
+    throw {
+      field: "customerNumber",
+      message: "Customer number already exists."
+    };
 
-  const hashedPassword = await bcrypt.hash(userToCreate.password, saltRounds);
+  const usernameExists = await prisma.user.findUnique({
+    where: { username: userToCreate.username }
+  });
+  if (usernameExists)
+    throw { field: "username", message: "Username already exists." };
+
+  const emailExists = await prisma.user.findUnique({
+    where: { email: userToCreate.email }
+  });
+  if (emailExists) throw { field: "email", message: "Email already exists." };
+
+  const hashedPassword = await bcrypt.hash(userToCreate.password, SALT_ROUNDS);
 
   const [day, month, year] = userToCreate.dateOfBirth.split(".");
   const dateOfBirth = new Date(`${year}-${month}-${day}`);
@@ -92,6 +127,66 @@ const createUser = async (userToCreate: CreateUserDto) => {
       password: hashedPassword
     }
   });
+};
+
+const updateUser = async (customerNumber: string, userToEdit: EditUserDto) => {
+  const parsed = editUserSchema.safeParse(userToEdit);
+  if (!parsed.success) {
+    throw { type: "validation", errors: parsed.error.issues };
+  }
+
+  // if (userToEdit.customerNumber) {
+  //   const exists = await prisma.user.findFirst({
+  //     where: {
+  //       customer_number: userToEdit.customerNumber
+  //     }
+  //   });
+  //   if (exists)
+  //     throw {
+  //       field: "customerNumber",
+  //       message: "Customer number already exists."
+  //     };
+  // }
+
+  if (userToEdit.email) {
+    const exists = await prisma.user.findFirst({
+      where: {
+        email: userToEdit.email,
+        NOT: { customer_number: customerNumber }
+      }
+    });
+    if (exists) throw { field: "email", message: "Email already exists." };
+  }
+
+  let hashedPassword: string | undefined;
+  if (userToEdit.password) {
+    hashedPassword = await bcrypt.hash(userToEdit.password, SALT_ROUNDS);
+  }
+
+  let dateOfBirth: Date | undefined;
+  if (userToEdit.dateOfBirth) {
+    const [day, month, year] = userToEdit.dateOfBirth.split(".");
+    const parsedDate = new Date(`${year}-${month}-${day}`);
+    if (parsedDate > new Date())
+      throw new Error("Date of birth can't be in the future");
+    dateOfBirth = parsedDate;
+  }
+
+  const updateData: Record<string, any> = {};
+  if (userToEdit.customerNumber)
+    updateData.customer_number = userToEdit.customerNumber;
+  if (userToEdit.firstName) updateData.first_name = userToEdit.firstName;
+  if (userToEdit.lastName) updateData.last_name = userToEdit.lastName;
+  if (userToEdit.email) updateData.email = userToEdit.email;
+  if (dateOfBirth) updateData.date_of_birth = dateOfBirth;
+  if (hashedPassword) updateData.password = hashedPassword;
+
+  const updatedUser = await prisma.user.update({
+    where: { customer_number: customerNumber },
+    data: updateData
+  });
+
+  return updatedUser;
 };
 
 const deleteUserByCustomerNumber = async (
@@ -114,6 +209,7 @@ const deleteUserByCustomerNumber = async (
 export {
   getAllUsers,
   createUser,
+  updateUser,
   deleteUserByCustomerNumber,
   getUserByCustomerNumber
 };

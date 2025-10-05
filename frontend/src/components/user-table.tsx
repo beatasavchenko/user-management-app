@@ -13,6 +13,7 @@ import {
 import dayjs from "dayjs";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const SORTABLE_COLUMNS: {
     key: "customerNumber" | "username" | "firstName" | "lastName" | "lastLogin";
@@ -26,12 +27,13 @@ const SORTABLE_COLUMNS: {
 ];
 
 export const UserTable = ({ search }: { search: string }) => {
+    const navigate = useNavigate();
     const [sortColumn, setSortColumn] = useState<
         "customerNumber" | "username" | "firstName" | "lastName" | "lastLogin"
     >();
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">();
 
-    const { data: userData, refetch } = useGetUsersQuery({
+    const { data: userData } = useGetUsersQuery({
         search,
         sortBy: sortColumn,
         order: sortOrder,
@@ -55,8 +57,12 @@ export const UserTable = ({ search }: { search: string }) => {
 
     const [deleteUserMutation] = useDeleteUserMutation();
 
+    const handleEditClick = (customerNumber: string) => {
+        navigate(`/edit/${customerNumber}`);
+    };
+
     return (
-        <div className="user-table-container">
+        <div className="table-container">
             {userData?.length && userData.length > 0 ? (
                 <table>
                     <thead>
@@ -103,6 +109,9 @@ export const UserTable = ({ search }: { search: string }) => {
                                     <FontAwesomeIcon
                                         className="icon"
                                         icon={faEdit}
+                                        onClick={() =>
+                                            handleEditClick(user.customerNumber)
+                                        }
                                     />{" "}
                                     <FontAwesomeIcon
                                         className="icon"

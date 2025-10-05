@@ -4,12 +4,16 @@ interface User {
     firstName: string;
     lastName: string;
     email: string;
-    lastLogin: Date;
+    lastLogin: string;
+    dateOfBirth: string;
 }
 
 interface CreateUserDto extends Omit<User, "lastLogin"> {
-    dateOfBirth: string;
     password: string;
 }
 
-export type { User, CreateUserDto };
+interface EditUserDto extends Omit<Partial<User>, "lastLogin" | "username"> {
+    password: string;
+}
+
+export type { User, CreateUserDto, EditUserDto };
