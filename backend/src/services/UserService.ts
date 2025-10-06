@@ -1,10 +1,12 @@
 import { PrismaClient } from "@prisma/client";
 import { editUserSchema, userSchema } from "@shared/schemas/userSchema";
-import { CreateUserDto, EditUserDto } from "@shared/types/User.type";
+import { CreateUserDto, EditUserDto } from "@shared/types/user";
 import bcrypt from "bcrypt";
+import { GetAllUsersParams } from "src/types/props";
 
 const prisma = new PrismaClient();
 
+// used for saving hashed passwords to DB
 const SALT_ROUNDS = 10;
 
 const DB_COLUMNS_MAP: Record<string, string> = {
@@ -15,17 +17,6 @@ const DB_COLUMNS_MAP: Record<string, string> = {
   email: "email",
   lastLogin: "last_login",
   dateOfBirth: "date_of_birth"
-};
-
-type GetAllUsersParams = {
-  search?: string;
-  sortBy?:
-    | "customerNumber"
-    | "username"
-    | "firstName"
-    | "lastName"
-    | "lastLogin";
-  order?: "asc" | "desc";
 };
 
 const getAllUsers = async ({
@@ -186,10 +177,6 @@ const deleteUserByCustomerNumber = async (
     });
     return true;
   } catch (error: any) {
-    if (error.code === "P2025") {
-      return false;
-    }
-
     throw error;
   }
 };

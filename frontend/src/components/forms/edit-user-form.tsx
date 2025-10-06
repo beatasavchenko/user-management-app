@@ -29,12 +29,12 @@ export default function EditUserForm({
                 originalCustomerNumber: customerNumber,
                 data,
             }).unwrap();
+
             toast.success("User edited successfully");
             navigate("/");
         } catch (err: any) {
-            if (err?.data?.field) {
-                return { [err.data.field]: err.data.message };
-            }
+            if (err?.data?.field) return { [err.data.field]: err.data.message };
+
             toast.error("Error editing user");
             return;
         }

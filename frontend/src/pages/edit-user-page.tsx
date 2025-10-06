@@ -11,11 +11,7 @@ export default function EditUserPage() {
             <PageHeader>
                 <h2>Edit a User</h2>
             </PageHeader>
-            {customerNumber ? (
-                <EditUserForm customerNumber={customerNumber} />
-            ) : (
-                <></>
-            )}
+            {customerNumber && <EditUserForm customerNumber={customerNumber} />}
         </PageLayout>
     );
 }

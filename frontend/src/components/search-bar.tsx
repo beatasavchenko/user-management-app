@@ -1,10 +1,11 @@
-export default function SearchBar({
-    search,
-    setSearch,
-}: {
+type SearchBarProps = {
     search: string;
     setSearch: React.Dispatch<React.SetStateAction<string>>;
-}) {
+};
+
+export default function SearchBar(props: SearchBarProps) {
+    const { search, setSearch } = props;
+
     return (
         <input
             value={search}

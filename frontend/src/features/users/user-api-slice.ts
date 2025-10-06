@@ -1,14 +1,10 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import type { CreateUserDto, EditUserDto, User } from "@shared/types/User.type";
+import type { CreateUserDto, EditUserDto, User } from "@shared/types/user";
+import { type SortableColumn } from "@shared/types/sortableColumn";
 
 type GetUsersParams = {
     search?: string;
-    sortBy?:
-        | "customerNumber"
-        | "username"
-        | "firstName"
-        | "lastName"
-        | "lastLogin";
+    sortBy?: SortableColumn;
     order?: "asc" | "desc";
 };
 

@@ -1,4 +1,4 @@
-import { ZodError, type ZodSchema } from "zod";
+import { type ZodSchema } from "zod";
 import { useState } from "react";
 import dayjs from "dayjs";
 
@@ -11,6 +11,7 @@ type FormProps<T extends Record<string, any>> = {
         type?: "text" | "password" | "email" | "date" | "number";
         placeholder?: string;
     }[];
+    // for editing
     readOnlyFields?: string[];
     onSubmit: (data: T) => Promise<Partial<Record<keyof T, string>> | void>;
 };
@@ -35,7 +36,7 @@ export default function Form<T extends Record<string, any>>({
 
         if (!result.success) {
             const fieldErrors: Partial<Record<keyof T, string>> = {};
-            (result.error as ZodError<T>).issues.forEach((issue) => {
+            result.error.issues.forEach((issue) => {
                 const field = issue.path[0] as keyof T;
                 fieldErrors[field] = issue.message;
             });

@@ -14,9 +14,10 @@ import dayjs from "dayjs";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { type SortableColumn } from "@shared/types/sortableColumn";
 
 const SORTABLE_COLUMNS: {
-    key: "customerNumber" | "username" | "firstName" | "lastName" | "lastLogin";
+    key: SortableColumn;
     label: string;
 }[] = [
     { key: "customerNumber", label: "Customer Number" },
@@ -26,11 +27,16 @@ const SORTABLE_COLUMNS: {
     { key: "lastLogin", label: "Last Login" },
 ];
 
-export const UserTable = ({ search }: { search: string }) => {
+type UserTableProps = {
+    search: string;
+};
+
+export const UserTable = (props: UserTableProps) => {
+    const { search } = props;
+
     const navigate = useNavigate();
-    const [sortColumn, setSortColumn] = useState<
-        "customerNumber" | "username" | "firstName" | "lastName" | "lastLogin"
-    >();
+
+    const [sortColumn, setSortColumn] = useState<SortableColumn>();
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">();
 
     const { data: userData } = useGetUsersQuery({
@@ -39,14 +45,7 @@ export const UserTable = ({ search }: { search: string }) => {
         order: sortOrder,
     });
 
-    const handleSort = (
-        column:
-            | "customerNumber"
-            | "username"
-            | "firstName"
-            | "lastName"
-            | "lastLogin"
-    ) => {
+    const handleSort = (column: SortableColumn) => {
         if (column === sortColumn) {
             setSortOrder(sortOrder === "asc" ? "desc" : "asc");
         } else {

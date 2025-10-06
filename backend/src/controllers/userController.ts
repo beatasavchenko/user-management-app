@@ -6,7 +6,7 @@ import {
   getUserByCustomerNumber,
   updateUser
 } from "../services/UserService";
-import { FieldError } from "src/types/FieldError.type";
+import { FieldError } from "src/types/fieldError";
 
 const getUsers = async (req: Request, res: Response) => {
   try {

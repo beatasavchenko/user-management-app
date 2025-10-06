@@ -30,17 +30,14 @@ DATABASE_URL=postgres://postgres:postgres@postgres/user_management_system
 Das folgende Befehl in dem Root-Verzeichnis ausführen:
 
 ```bash
-npm install
-cd frontend
-npm install
+npm run install:all
 ```
 
 ### 6. App starten
 
-Führen Sie das Projekt aus dem Root-Verzeichnis aus:
+Führen Sie das Projekt aus:
 
 ```bash
-cd ..
 npm run dev
 ```
 
