@@ -39,7 +39,7 @@ export const UserTable = (props: UserTableProps) => {
     const [sortColumn, setSortColumn] = useState<SortableColumn>();
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">();
 
-    const { data: userData } = useGetUsersQuery({
+    const { data: userData, refetch } = useGetUsersQuery({
         search,
         sortBy: sortColumn,
         order: sortOrder,
@@ -123,6 +123,7 @@ export const UserTable = (props: UserTableProps) => {
                                                     toast.success(
                                                         "User deleted successfully"
                                                     );
+                                                    refetch();
                                                 })
                                                 .catch(() => {
                                                     toast.error(
