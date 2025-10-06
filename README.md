@@ -27,7 +27,7 @@ DATABASE_URL=postgres://postgres:postgres@postgres/user_management_system
 
 ### 5. Abhängigkeiten installieren
 
-Das folgende Befehl in dem Root-Verzeichnis ausführen:
+Führen Sie den folgenden Befehl im Root-Verzeichnis aus:
 
 ```bash
 npm run install:all
