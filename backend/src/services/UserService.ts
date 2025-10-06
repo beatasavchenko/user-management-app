@@ -177,6 +177,9 @@ const deleteUserByCustomerNumber = async (
     });
     return true;
   } catch (error: any) {
+    if (error.code === "P2025") {
+      return false;
+    }
     throw error;
   }
 };
